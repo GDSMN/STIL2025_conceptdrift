@@ -1,0 +1,9 @@
+python_version==3.10
+alibi_detect==0.12.0
+gensim==4.3.3
+numpy==2.3.0
+pandas==2.3.0
+scikit_learn==1.7.0
+scipy==1.15.3
+sentence_transformers==3.3.1
+spacy==3.8.4
