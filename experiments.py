@@ -33,7 +33,6 @@ class Experiments:
         self.partitions = ceildiv((self.dataset.date.dt.to_period(period).max() - self.dataset.date.dt.to_period(period).min()).n, self.window)+1
 
     def same_distribution_subset(self, vectors):
-        # verdadeiro/falso, n subsets, tamanho, vetor
         subsets = np.zeros((2, self.partitions, self.size, vectors.shape[-1]))
         
         df = self.dataset.sample(frac=1).reset_index(drop=True)
@@ -42,11 +41,9 @@ class Experiments:
         true_idx = vectors[df.loc[df['label'] == 1].sample(self.size*self.partitions).index]
         
         for i in range(self.partitions):
-            # fake = vectors[df.loc[df['label'] == 0].iloc[i*size:(i+1)*size].index]
             fake = fake_idx[i*self.size:(i+1)*self.size]
             subsets[0, i] = fake
             
-            # true = vectors[df.loc[df['label'] == 1].iloc[i*size:(i+1)*size].index]
             true = true_idx[i*self.size:(i+1)*self.size]
             subsets[1, i] = true
         return subsets
@@ -63,7 +60,6 @@ class Experiments:
         """
         if verbose: print(f"{self.partitions} partitions")
         
-        #verdadeiro/falso, NxN, detectores
         results = np.zeros((2, self.partitions, self.partitions, self.N, len(self.detectors)))
         
         for n in range(self.N):
@@ -71,10 +67,8 @@ class Experiments:
             subsets = self.same_distribution_subset(vectors)
             for i in range(self.partitions-1):
                 for o in range(i+1, self.partitions):
-                    #fake
                     results[0][i][o][n] = tests(subsets[0][i], subsets[0][o])
                     results[0][o][i][n] = results[0][i][o][n]
-                    #true
                     results[1][i][o][n] = tests(subsets[1][i], subsets[1][o])
                     results[1][o][i][n] = results[1][i][o][n]
         return results
@@ -84,7 +78,6 @@ class Experiments:
         period_size = ceildiv((self.dataset.date.dt.to_period(self.period).max() - self.dataset.date.dt.to_period(self.period).min()).n, self.window)+1
         if verbose: print(f"{period_size} periods")
         
-        #verdadeiro/falso, window x window, repetições, detectores
         results = np.zeros((2, period_size, period_size, self.N, len(self.detectors)))
         
         for n in range(self.N):
@@ -107,12 +100,9 @@ class Experiments:
                     true_y = self.rng.choice(dt_window.loc[dt_window.label == 1].index, self.size, replace=False)
                     fake_y = self.rng.choice(dt_window.loc[dt_window.label == 0].index, self.size, replace=False)
                     
-                    # print(pstart,pend,p2start,p2end)
-                    #fake
                     results[0][i][o][n] = tests(vectors[fake_x], vectors[fake_y])
                     results[0][o][i][n] = results[0][i][o][n]
                     
-                    #true
                     results[1][i][o][n] = tests(vectors[true_x], vectors[true_y])
                     results[1][o][i][n] = results[1][i][o][n]
                     p2start = p2end
@@ -133,7 +123,6 @@ class Experiments:
         
         w2v = Word2Vec.load(os.getcwd()+"\\models\\tuned_bow.txt")
         
-        #verdadeiro/falso, window x window, repetições, detectores
         results = np.zeros((2, period_size, period_size, self.size, self.size, self.N))
         
         for n in range(self.N):
@@ -165,11 +154,9 @@ class Experiments:
                             distance_matrix[1][j1][j2] = w2v.wv.wmdistance(true_x.iloc[j1],true_y.iloc[j2])
                             distance_matrix[1][j2][j1] = distance_matrix[1][j1][j2]
                             
-                    #fake
                     results[0][i][o][:,:,n] = distance_matrix[0]
                     results[0][o][i][:,:,n] = results[0][i][o][:,:,n]
                     
-                    #true
                     results[1][i][o][:,:,n] = distance_matrix[1]
                     results[1][o][i][:,:,n] = results[1][i][o][:,:,n]
                     
@@ -187,7 +174,6 @@ class Experiments:
     def same_distribution_WMD(self, verbose=True):
         if verbose: print(f"{self.partitions} partitions")
         
-        #verdadeiro/falso, NxN, detectores
         results = np.zeros((2, self.partitions, self.partitions, self.size, self.size, self.N))
         w2v = Word2Vec.load(os.getcwd()+"\\models\\tuned_bow.txt")
         
@@ -214,11 +200,10 @@ class Experiments:
                             distance_matrix[0][j2][j1] = distance_matrix[0][j1][j2]
                             distance_matrix[1][j1][j2] = w2v.wv.wmdistance(subsets[1][i].iloc[j1],subsets[1][o].iloc[j2])
                             distance_matrix[1][j2][j1] = distance_matrix[1][j1][j2]
-                    #fake
+
                     results[0][i][o][:,:,n]= distance_matrix[0]
                     results[0][o][i][:,:,n] = results[0][i][o][:,:,n]
                     
-                    #true
                     results[1][i][o][:,:,n] = distance_matrix[1]
                     results[1][o][i][:,:,n] = results[1][i][o][:,:,n]
         return results
