@@ -1,12 +1,8 @@
 import pandas as pd
 import re
 import numpy as np
-from scipy.stats import combine_pvalues
 import os 
 import datetime
-from alibi_detect.cd import LSDDDrift, KSDrift, CVMDrift
-
-import kernel_two_samples_test as KTS_test
 
 class FakeRecogna2:
     def __init__(self, path_dataset):
@@ -151,29 +147,3 @@ def text_cleaning(text):
     text = re.sub(r'(\@|\#)[A-z0-9]+', 'HASHTAG', text)
     text = re.sub(r'''(?i)\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-\/]+[.][a-z]{2,4})(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]|))''', 'URL', text)
     return text
-    
-    
-    
-def tests(X,Y,detectors = ['KTS','KS','LSDD']):
-    mmd2u, mmd2u_null, kts = KTS_test.kernel_two_sample_test(X, Y,
-                                                        kernel_function='rbf',
-                                                        verbose=False)
-    try:
-        ksd = KSDrift(X, correction='bonferroni')
-        ks = ksd.predict(Y, drift_type='feature', return_p_val=True)['data']['p_val']
-        ks = combine_pvalues(ks, method='fisher')[1]
-    except:
-        ks = np.NaN
-    try:
-        lsddd = LSDDDrift(X)
-        lsdd = lsddd.predict(Y)['data']['p_val']
-    except:
-        lsdd = np.NaN
-    try:
-        cvmd = CVMDrift(X, correction='bonferroni')
-        cvm = cvmd.predict(Y, drift_type='feature', return_p_val=True)['data']['p_val']
-        cvm = combine_pvalues(cvm, method='fisher')[1]
-    except:
-        cvm = np.NaN
-    
-    return [kts,ks,lsdd,cvm]
