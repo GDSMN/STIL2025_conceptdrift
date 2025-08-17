@@ -1,7 +1,3 @@
-# IMPORTANT NOTICE
-
-**This repository contains code and data from a paper currently under review. The content may be updated and additional details added after publication.**
-
 # Description
 
 This repository contains the dataset and code used in our study.
@@ -22,3 +18,16 @@ This repository contains the dataset and code used in our study.
 ## More Information About the Data
 
 The original FakeRecogna2 corpus is available at https://huggingface.co/datasets/recogna-nlp/fakerecogna2-abstrativa
+
+# BibTex Entry
+
+@inproceedings{2025_guedes_conceptDrift_fakeNews_STIL,
+    author = {Manuela Guedes Wanderley and Lucca Baptista Silva Ferraz and Tiago Agostinho Almeida and Renato Moraes Silva},
+    title = {A Moving Target: Detecting Concept Drift in Brazilian Portuguese Fake News},
+     booktitle={Proceedings of the 16th Symposium in Information and Human Language Technology (STIL'2025)}, 
+     year={2025},
+     month=oct,
+     address = {Fortaleza, CE, Brazil},
+     publisher={Association for Computational Linguistics},
+    pages = {1--12}
+}
