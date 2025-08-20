@@ -4,6 +4,7 @@ except Exception:
     from langchain.embeddings import HuggingFaceEmbeddings
 import pandas as pd
 import numpy as np
+from typing import Optional
 
 
 class vectors:

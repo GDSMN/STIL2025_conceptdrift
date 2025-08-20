@@ -5,7 +5,7 @@ import numpy as np
 import os
 
 class Doc2Vec:
-    def __init__(self, modelName='rufimelo/bert-large-portuguese-cased-sts'):
+    def __init__(self, modelName='neuralmind/bert-large-portuguese-cased'):
         self.modelName = modelName
         
     def getVector(self, dataset_train, dataset_test = None):

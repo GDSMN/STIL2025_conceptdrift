@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from alibi_detect import MMDDrift
+from alibi_detect.cd import MMDDrift
 
 class BiweeklyMMD:
     """
